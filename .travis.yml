@@ -1,0 +1,13 @@
+os: linux
+dist: xenial
+addons:
+  apt:
+    packages:
+      - libgsl-dev
+      - libglib2.0-dev
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - bhcd/bhcd --help  
