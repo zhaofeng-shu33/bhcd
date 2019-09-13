@@ -18,3 +18,4 @@ target_link_libraries(bhcd optimized ${GSL_LIBRARIES})
 
 target_link_libraries(bhcd libbhcd)
 target_link_libraries(bhcd hccd)
+install(TARGETS bhcd RUNTIME DESTINATION bin)
