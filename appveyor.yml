@@ -1,0 +1,26 @@
+version: 1.0.{build}
+image: Visual Studio 2019
+configuration: Release
+platform: x64
+environment:
+  VCPKG_ROOT: C:\Tools\vcpkg
+install:
+- cmd: >-
+
+    IF NOT EXIST "C:\Tools\vcpkg\installed\x64-windows\include\glib.h" vcpkg install gsl:x64-windows glib:x64-windows
+        
+cache: C:\Tools\vcpkg\installed\x64-windows
+before_build:
+- cmd: >-
+    mkdir build
+
+    cd build
+
+    cmake -G "Visual Studio 15 2017 Win64" -DCMAKE_TOOLCHAIN_FILE=C:\Tools\vcpkg\scripts\buildsystems\vcpkg.cmake ..\
+build:
+  project: build\ALL_BUILD.vcxproj
+  verbosity: minimal
+test_script:
+- cmd: >-
+    .\bhcd\Release\bhcd.exe --help
+
