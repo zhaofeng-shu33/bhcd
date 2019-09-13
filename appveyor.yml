@@ -16,7 +16,7 @@ before_build:
 
     cd build
 
-    cmake -G "Visual Studio 16 2019 Win64" -DCMAKE_TOOLCHAIN_FILE=C:\Tools\vcpkg\scripts\buildsystems\vcpkg.cmake ..\
+    cmake -G "Visual Studio 16 2019" -A Win64 -DCMAKE_TOOLCHAIN_FILE=C:\Tools\vcpkg\scripts\buildsystems\vcpkg.cmake ..\
 build:
   project: build\ALL_BUILD.vcxproj
   verbosity: minimal

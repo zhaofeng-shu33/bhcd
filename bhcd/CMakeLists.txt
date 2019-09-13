@@ -14,7 +14,7 @@ elseif(UNIX)
 endif()
 
 target_link_libraries(bhcd debug ${GSL_LIBRARY_DEBUG})
-target_link_libraries(bhcd optimized ${GSL_LIBRARY})
+target_link_libraries(bhcd optimized ${GSL_LIBRARIES})
 
 target_link_libraries(bhcd libbhcd)
 target_link_libraries(bhcd hccd)
