@@ -1,6 +1,8 @@
 #include "bitset.h"
 #include "util.h"
-
+#if _WIN32
+    #include "winpatch.h"
+#endif
 #define	BITS_PER_ELEM		64
 #define	MASK_ELEM		(BITS_PER_ELEM-1)
 /* log2(BITS_PER_ELEM) */
