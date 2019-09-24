@@ -1,7 +1,10 @@
 #include "bitset.h"
 #include "util.h"
 #if _WIN32
-    #include "winpatch.h"
+#include "winpatch.h"
+#define g_bit_nth_lsf_wrapper(mask, nth_bit) g_bit_nth_lsf_impl_win(mask, nth_bit)
+#else
+#define g_bit_nth_lsf_wrapper(mask, nth_bit) g_bit_nth_lsf_impl(mask, nth_bit)
 #endif
 #define	BITS_PER_ELEM		64
 #define	MASK_ELEM		(BITS_PER_ELEM-1)
@@ -127,7 +130,7 @@ static inline void bitset_get_bit(Bitset * bitset, guint32 index, guint32 * elem
 guint32 bitset_any(Bitset *bitset) {
 	for (guint32 ii = 0; ii < bitset->size; ii++) {
 		guint64 elem = bitset->elems[ii];
-		gint offset = g_bit_nth_lsf(elem, -1);
+		gint offset = g_bit_nth_lsf_wrapper(elem, -1);
 		if (offset != -1) {
 			return offset + ii*BITS_PER_ELEM;
 		}
@@ -197,11 +200,11 @@ gboolean bitset_iter_next(BitsetIter * iter, guint32 * bit) {
 	}
 
 	elem = iter->bitset->elems[iter->elem_index];
-	iter->offset = g_bit_nth_lsf(elem, iter->offset);
+	iter->offset = g_bit_nth_lsf_wrapper(elem, iter->offset);
 	while (iter->offset == -1 && iter->elem_index < iter->bitset->size-1) {
 		iter->elem_index++;
 		elem = iter->bitset->elems[iter->elem_index];
-		iter->offset = g_bit_nth_lsf(elem, iter->offset);
+		iter->offset = g_bit_nth_lsf_wrapper(elem, iter->offset);
 	}
 	if (iter->offset == -1) {
 		return FALSE;
@@ -214,8 +217,8 @@ void bitset_foreach(const Bitset *bitset, BitsetFunc func, gpointer user_data) {
 	for (guint32 ii = 0; ii < bitset->size; ii++) {
 		guint64 elem = bitset->elems[ii];
 		guint32 bit;
-		gint offset = g_bit_nth_lsf(elem, -1);
-		for (;offset != -1; offset = g_bit_nth_lsf(elem, offset)) {
+		gint offset = g_bit_nth_lsf_wrapper(elem, -1);
+		for (;offset != -1; offset = g_bit_nth_lsf_wrapper(elem, offset)) {
 			bit = offset + ii*BITS_PER_ELEM;
 			func(user_data, bit);
 		}
