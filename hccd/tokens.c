@@ -44,7 +44,7 @@ Tokens* tokens_open_from_pipe_string(const gchar* gml_buffer) {
     int num_bytes = _write(fd[1], gml_buffer, buffer_len + 1);
 #else
     pipe(fd);
-    write(fd[1], gml_buffer, buffer_len);
+    write(fd[1], gml_buffer, buffer_len + 1);
 #endif
     
     toks = g_new(Tokens, 1);
