@@ -1,13 +1,24 @@
-os: linux
-dist: xenial
-addons:
-  apt:
-    packages:
-      - libgsl-dev
-      - libglib2.0-dev
+language: cpp
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      addons:
+         apt:
+           packages:
+             - libgsl-dev
+             - libglib2.0-dev
+    - os: osx
+      osx_image: xcode10.2
+      addons:
+         homebrew:
+           package:
+             - gsl
+             - glib
 script:
   - mkdir build
   - cd build
-  - cmake ..
+  - cmake -DENABLE_TESTING=ON ..
   - make
-  - bhcd/bhcd --help  
+  - bhcd/bhcd --help 
+  - ctest 
