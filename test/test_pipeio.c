@@ -3,7 +3,6 @@
 #include "tokens.h"
 #include "dataset_gml.h"
 #endif
-#if _WIN32
 static void
 token_read(void)
 {
@@ -22,7 +21,6 @@ static void dataset_load(void)
     Dataset* dd = dataset_gml_load(a);
     dataset_unref(dd);
 }
-#endif
 int
 main(int   argc,
     char* argv[])

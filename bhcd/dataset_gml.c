@@ -15,7 +15,7 @@ Dataset * dataset_gml_load(const gchar *fname_or_gmlbuffer) {
     gint len = strlen(fname_or_gmlbuffer);
 	id_labels = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 	dd = dataset_new();
-    if (len >= 100) {
+    if (len < 100) {
         dataset_set_filename(dd, fname_or_gmlbuffer);
         toks = tokens_open(fname_or_gmlbuffer);
     }

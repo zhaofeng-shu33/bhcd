@@ -9,28 +9,7 @@
 static const gboolean tree_debug = FALSE;
 
 
-struct Tree_t {
-	guint		ref_count;
-	gboolean	is_leaf;
-	/* shared */
-	Params *	params;
-	gpointer	suffstats_on;
-	gpointer	suffstats_off;
-	/* elements shared */
-	GList *		children;
 
-	Labelset *	labels;
-	Labelset *	merge_left;
-	Labelset *	merge_right;
-
-	gboolean	dirty;
-	gdouble		log_pi;
-	gdouble		log_not_pi;
-	gdouble		logprob_cluster;
-	gdouble		logprob_children;
-
-	gdouble		logprob;
-};
 
 
 static Tree * tree_new(Params * params);
