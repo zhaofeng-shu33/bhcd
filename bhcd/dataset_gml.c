@@ -7,16 +7,21 @@
 static void parse_node(Tokens * toks, Dataset * dd, GHashTable * id_labels);
 static void parse_edge(Tokens * toks, Dataset * dd, GHashTable * id_labels);
 
-Dataset * dataset_gml_load(const gchar *fname) {
+Dataset * dataset_gml_load(const gchar *fname_or_gmlbuffer) {
 	Dataset * dd;
 	Tokens * toks;
 	GHashTable * id_labels;
 	gchar *next;
-
+    gint len = strlen(fname_or_gmlbuffer);
 	id_labels = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, NULL);
 	dd = dataset_new();
-	dataset_set_filename(dd, fname);
-	toks = tokens_open(fname);
+    if (len >= 100) {
+        dataset_set_filename(dd, fname_or_gmlbuffer);
+        toks = tokens_open(fname_or_gmlbuffer);
+    }
+    else {
+        toks = tokens_open_from_pipe_string(fname_or_gmlbuffer);
+    }
 	while (tokens_has_next(toks)) {
 		next = tokens_next(toks);
 		if (strcmp(next, "graph") == 0) {

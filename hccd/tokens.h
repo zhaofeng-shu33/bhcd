@@ -14,7 +14,7 @@ struct Tokens_t {
     gchar* next;
 };
 typedef struct Tokens_t Tokens;
-Tokens* tokens_open_from_pipe_string(const gchar* gml_buffer, gint buffer_len);
+Tokens* tokens_open_from_pipe_string(const gchar* gml_buffer);
 Tokens * tokens_open(const gchar *fname);
 void tokens_fail(Tokens * toks, const gchar *fmt, ...);
 void tokens_close(Tokens * toks);
