@@ -1,8 +1,6 @@
 #include <glib.h>
-#if _WIN32
 #include "tokens.h"
 #include "dataset_gml.h"
-#endif
 static void
 token_read(void)
 {
@@ -26,8 +24,7 @@ main(int   argc,
     char* argv[])
 {
     g_test_init(&argc, &argv, NULL);
-#if _WIN32
     g_test_add_func("/testpipeio/token_read", token_read);
-#endif
+    g_test_add_func("/testpipeio/dataset_load", dataset_load);
     return g_test_run();
 }
