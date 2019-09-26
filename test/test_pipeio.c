@@ -52,7 +52,10 @@ static void write_result(void)
     GRand* rng = g_rand_new();
     Tree* root = test_run(rng, dataset);
     gchar* strbuffer = NULL;
-    tree_io_save(root, strbuffer);
+    tree_io_save_string(root, &strbuffer);
+    gint str_size = strlen(strbuffer);
+    g_assert(str_size > 0);
+    g_assert(str_size < 1024);
     tree_unref(root);
     g_rand_free(rng);
     g_free(strbuffer);

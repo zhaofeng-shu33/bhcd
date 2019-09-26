@@ -3,10 +3,6 @@
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_errno.h>
 #include <glib/gprintf.h>
-#if _WIN32
-#include <io.h>
-#include <fcntl.h>
-#endif
 #include "tree.h"
 #include "util.h"
 
@@ -104,20 +100,7 @@ void io_stdout(IOFunc func, gpointer user_data) {
 void io_writefile(gchar *fname_or_strbuffer, IOFunc func, gpointer user_data) {
     GIOChannel *io;
     GError *error = NULL;
-    if (fname_or_strbuffer == NULL) {
-        int fd[2];
-#if _WIN32
-        Tree* tmp_tree = user_data;
-        guint label_num = labelset_count(tmp_tree->labels);
-        if (-1 == _pipe(fd, 1024, _O_TEXT))
-            g_error("open write pipe failed");
-        io = g_io_channel_win32_new_fd(fd[1]);
-#else
-        pipe(fd);
-        io = g_io_channel_unix_new(fd[1]);
-#endif
-    }
-    else if (strcmp(fname_or_strbuffer, "-") == 0) {
+    if (strcmp(fname_or_strbuffer, "-") == 0) {
 		io_stdout(func, user_data);
 		return;
 	}
@@ -131,15 +114,8 @@ void io_writefile(gchar *fname_or_strbuffer, IOFunc func, gpointer user_data) {
     g_io_channel_shutdown(io, TRUE, &error);
     if (error != NULL) {
         g_error("shutdown `%s': %s", fname_or_strbuffer, error->message);
-    }
-    if (fname_or_strbuffer == NULL) {
-        // read from the pipe
-        gsize len_data;
-        g_io_channel_read_to_end(io, &fname_or_strbuffer, &len_data, &error);
-        if (error != NULL) {
-            g_error("read strbuffer error with message: %s", error->message);
-        }
-    }
+    }    
+
     g_io_channel_unref(io);
 }
 

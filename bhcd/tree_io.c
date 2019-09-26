@@ -1,7 +1,10 @@
 #include "tree_io.h"
 #include "util.h"
 #include "version.h"
-
+#if _WIN32
+#include <io.h>
+#include <fcntl.h>
+#endif
 
 Tree * tree_io_load(const gchar *fname) {
 	return NULL;
@@ -9,6 +12,46 @@ Tree * tree_io_load(const gchar *fname) {
 
 void tree_io_save(Tree *tree, gchar *fname_or_strbuffer) {
 	io_writefile(fname_or_strbuffer, (IOFunc)tree_io_save_io, tree);
+}
+
+void tree_io_save_string(Tree* tree, gchar** strbufferptr) {
+    GIOChannel* io;
+    GError* error = NULL;
+    int fd[2];
+#if _WIN32
+        guint label_num = labelset_count(tree->labels);
+        if (-1 == _pipe(fd, 1024, _O_TEXT))
+            g_error("open write pipe failed");
+        io = g_io_channel_win32_new_fd(fd[1]);
+#else
+        pipe(fd);
+        io = g_io_channel_unix_new(fd[1]);
+#endif
+    tree_io_save_io(tree, io);
+    g_io_channel_shutdown(io, TRUE, &error);
+    if (error != NULL) {
+        g_error("shutdown: %s", error->message);
+    }
+    
+    // read from the pipe
+    gsize io_size;
+#if _WIN32
+    GIOChannel* io_read = g_io_channel_win32_new_fd(fd[0]);
+#else
+    GIOChannel* io_read = g_io_channel_unix_new(fd[0]);
+#endif
+    gchar* str_pointer;
+    g_io_channel_read_to_end(io_read, &str_pointer, &io_size, &error);
+    *strbufferptr = str_pointer;
+    if (error != NULL) {
+        g_error("read error with message : %s", error->message);
+    }
+    g_io_channel_shutdown(io_read, TRUE, &error);
+    if (error != NULL) {
+        g_error("shutdown error with message: %s", error->message);
+    }
+    g_io_channel_unref(io_read);
+    g_io_channel_unref(io);
 }
 
 void tree_io_save_io(Tree *root, GIOChannel *io) {
