@@ -3,6 +3,7 @@
 #include "tokens.h"
 #include "dataset_gml.h"
 #include "build.h"
+#include "tree_io.h"
 
 static Tree* test_run(GRand* rng, Dataset* dataset) {
     Params* params;
