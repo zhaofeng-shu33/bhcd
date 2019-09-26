@@ -12,7 +12,7 @@ matrix:
       osx_image: xcode10.2
       addons:
          homebrew:
-           package:
+           packages:
              - gsl
              - glib
 script:
