@@ -37,7 +37,7 @@ Tokens* tokens_open_from_pipe_string(const gchar* gml_buffer) {
     GError* error;
     int fd[2];
     gint buffer_len = strlen(gml_buffer);
-#if WIN32
+#if _WIN32
     int psize = 1024 * (1 + buffer_len / 1024);
     if(_pipe(fd, psize, _O_TEXT) == -1)
         return NULL;
