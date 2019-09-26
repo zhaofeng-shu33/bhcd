@@ -3,8 +3,8 @@
 #include <gsl/gsl_sf_exp.h>
 #include <gsl/gsl_errno.h>
 #include <glib/gprintf.h>
+#include "tree.h"
 #include "util.h"
-
 
 Pair *pair_new(gpointer fst, gpointer snd) {
 	Pair * pair;
@@ -97,25 +97,26 @@ void io_stdout(IOFunc func, gpointer user_data) {
 	g_io_channel_unref(io);
 }
 
-void io_writefile(const gchar *fname, IOFunc func, gpointer user_data) {
-        GIOChannel *io;
-        GError *error;
-
-	if (strcmp(fname, "-") == 0) {
+void io_writefile(gchar *fname_or_strbuffer, IOFunc func, gpointer user_data) {
+    GIOChannel *io;
+    GError *error = NULL;
+    if (strcmp(fname_or_strbuffer, "-") == 0) {
 		io_stdout(func, user_data);
 		return;
 	}
-        error = NULL;
-        io = g_io_channel_new_file(fname, "w", &error);
+    else {
+        io = g_io_channel_new_file(fname_or_strbuffer, "w", &error);
         if (error != NULL) {
-                g_error("open `%s': %s", fname, error->message);
+            g_error("open `%s': %s", fname_or_strbuffer, error->message);
         }
-        func(user_data, io);
-        g_io_channel_shutdown(io, TRUE, &error);
-        if (error != NULL) {
-                g_error("shutdown `%s': %s", fname, error->message);
-        }
-        g_io_channel_unref(io);
+    }
+    func(user_data, io);
+    g_io_channel_shutdown(io, TRUE, &error);
+    if (error != NULL) {
+        g_error("shutdown `%s': %s", fname_or_strbuffer, error->message);
+    }    
+
+    g_io_channel_unref(io);
 }
 
 void io_stdin(IOFunc func, gpointer user_data) {

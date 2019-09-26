@@ -3,9 +3,18 @@
 
 #include <glib.h>
 
-struct Tokens_t;
-typedef struct Tokens_t Tokens;
+struct Tokens_t {
+    gboolean debug;
+    GIOChannel* io;
+    gchar* fname;
+    guint lineno;
 
+    gchar* linebuf;
+    gchar* cur;
+    gchar* next;
+};
+typedef struct Tokens_t Tokens;
+Tokens* tokens_open_from_pipe_string(const gchar* gml_buffer);
 Tokens * tokens_open(const gchar *fname);
 void tokens_fail(Tokens * toks, const gchar *fmt, ...);
 void tokens_close(Tokens * toks);

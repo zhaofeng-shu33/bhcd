@@ -2,17 +2,10 @@
 #include <string.h>
 #include <glib/gprintf.h>
 #include "tokens.h"
-
-struct Tokens_t {
-	gboolean debug;
-	GIOChannel * io;
-	gchar * fname;
-	guint lineno;
-
-	gchar *linebuf;
-	gchar *cur;
-	gchar *next;
-};
+#if _WIN32
+#include <io.h>
+#include <fcntl.h>
+#endif
 
 void tokens_advance(Tokens * toks);
 void tokens_advance_line(Tokens *toks);
@@ -37,6 +30,40 @@ Tokens * tokens_open(const gchar *fname) {
 	}
 	tokens_advance(toks);
 	return toks;
+}
+
+Tokens* tokens_open_from_pipe_string(const gchar* gml_buffer) {
+    Tokens* toks;
+    GError* error;
+    int fd[2];
+    gint buffer_len = strlen(gml_buffer);
+#if _WIN32
+    int psize = 1024 * (1 + buffer_len / 1024);
+    if(_pipe(fd, psize, _O_TEXT) == -1)
+        return NULL;
+    int num_bytes = _write(fd[1], gml_buffer, buffer_len + 1);
+#else
+    pipe(fd);
+    write(fd[1], gml_buffer, buffer_len + 1);
+#endif
+    
+    toks = g_new(Tokens, 1);
+    toks->debug = FALSE;
+    toks->fname = NULL;
+    toks->next = NULL;
+    toks->cur = NULL;
+    toks->linebuf = NULL;
+    toks->lineno = 0;
+#if WIN32
+    toks->io = g_io_channel_win32_new_fd(fd[0]);
+#else
+    toks->io = g_io_channel_unix_new(fd[0]);
+#endif
+    if (toks->io == NULL) {
+        tokens_fail(toks, "unable to open pipe");
+    }
+    tokens_advance(toks);
+    return toks;
 }
 
 void tokens_fail(Tokens * toks, const gchar *fmt, ...) {
@@ -68,7 +95,7 @@ void tokens_advance(Tokens * toks) {
 			tokens_advance_line(toks);
 		}
 		/* end of file */
-		if (toks->linebuf == NULL) {
+		if (toks->linebuf == NULL || *toks->linebuf == '\0') {
 			break;
 		}
 		tokens_advance_try_next(toks);
