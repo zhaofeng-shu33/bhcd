@@ -4,7 +4,7 @@
 #include "winpatch.h"
 #define g_bit_nth_lsf_wrapper(mask, nth_bit) g_bit_nth_lsf_impl_win(mask, nth_bit)
 #else
-#define g_bit_nth_lsf_wrapper(mask, nth_bit) g_bit_nth_lsf_impl(mask, nth_bit)
+#define g_bit_nth_lsf_wrapper(mask, nth_bit) g_bit_nth_lsf(mask, nth_bit)
 #endif
 #define	BITS_PER_ELEM		64
 #define	MASK_ELEM		(BITS_PER_ELEM-1)
