@@ -34,7 +34,6 @@ Tokens * tokens_open(const gchar *fname) {
 
 Tokens* tokens_open_from_pipe_string(const gchar* gml_buffer) {
     Tokens* toks;
-    GError* error;
     int fd[2];
     gint buffer_len = strlen(gml_buffer);
 #if _WIN32
