@@ -20,7 +20,7 @@ void tree_io_save_string(Tree* tree, gchar** strbufferptr) {
     int fd[2];
 #if _WIN32
         guint label_num = labelset_count(tree->labels);
-        if (-1 == _pipe(fd, 1024, _O_TEXT))
+        if (-1 == _pipe(fd, label_num * 1024, _O_TEXT))
             g_error("open write pipe failed");
         io = g_io_channel_win32_new_fd(fd[1]);
 #else
