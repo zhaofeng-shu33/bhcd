@@ -8,15 +8,7 @@
 
 gboolean dataset_symmetric = FALSE;
 
-struct Dataset_t {
-	guint		ref_count;
-	gchar *		filename;
-	gint		omitted;
-	gboolean	keep_diag;
-	GQuark		max_qlabel;
-	GHashTable *	labels;
-	GHashTable *	cells;
-};
+
 
 
 typedef struct {
