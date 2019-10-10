@@ -2,7 +2,12 @@
 [![Build Status](https://travis-ci.com/zhaofeng-shu33/bhcd.svg?branch=master)](https://travis-ci.com/zhaofeng-shu33/bhcd)
 [![Windows](https://ci.appveyor.com/api/projects/status/github/zhaofeng-shu33/bhcd?branch=master&svg=true)](https://ci.appveyor.com/project/zhaofeng-shu33/bhcd)
 
+Origin
+
+This repository comes from [bhcd](https://github.com/blundellc/bhcd). The main difference is that this repository uses CMake build system while the original one uses `autoconfig`. The build instructions has some problems even with Unix system. We use CMake to make the algorithm cross-platform, supporting Windows and Unix.
+
 ## How to build
+
 You need to install glib and gsl as dependency.
 Then using standard cmake way to build the project for your operating system.
 
@@ -32,6 +37,10 @@ $ ./scripts/bhcd_plot tiny.tree tiny.fit tiny.pdf
 Then tiny.pdf will have a plot of the clustering.
 
 ### Run all tests
+
+## Windows Support
+
+Originally the code does not work on Windows. The bug comes from length of `unsigned long` is 4 bytes on Windows. See [ulong](https://github.com/microsoft/vcpkg/issues/8321) for detail. [This commit](https://github.com/zhaofeng-shu33/bhcd/commit/be90243ed9810fea8db05689fa5915f95c1d9a0a) fixes this problem.
 
 ## Reference Paper
 
