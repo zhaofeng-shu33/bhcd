@@ -15,8 +15,7 @@ add_executable(bhcd bhcd.c)
 
 
 
-target_link_libraries(bhcd debug ${GSL_LIBRARY_DEBUG})
-target_link_libraries(bhcd optimized ${GSL_LIBRARIES})
+target_link_libraries(bhcd GSL::gsl GSL::gslcblas)
 
 target_link_libraries(bhcd libbhcd)
 target_link_libraries(bhcd hccd)
