@@ -3,7 +3,15 @@
 
 #include <glib.h>
 
-struct Dataset_t;
+struct Dataset_t {
+	guint		ref_count;
+	gchar *		filename;
+	gint		omitted;
+	gboolean	keep_diag;
+	GQuark		max_qlabel;
+	GHashTable *	labels;
+	GHashTable *	cells;
+};
 typedef struct Dataset_t Dataset;
 typedef struct DatasetLabelIter_t {
 	GHashTableIter iter;
