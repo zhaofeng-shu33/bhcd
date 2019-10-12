@@ -2,6 +2,7 @@
 #define	BUILD_H
 
 #include <glib.h>
+#include <gmodule.h>
 #include "params.h"
 #include "tree.h"
 
